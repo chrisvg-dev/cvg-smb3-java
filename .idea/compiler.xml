@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="SambaJava3" />
+        <module name="cvg-smb3-java" />
       </profile>
     </annotationProcessing>
   </component>
