@@ -17,6 +17,9 @@ import java.util.EnumSet;
 import java.util.logging.Logger;
 
 public class SmbRemoteAccess extends AbstractRemoteAccess {
+
+    private static final String CLASS_VERSION = "V3";
+
     private static final Logger LOG = Logger.getLogger(SmbRemoteAccess.class.getName());
     public SmbRemoteAccess() {}
 
@@ -275,45 +278,40 @@ public class SmbRemoteAccess extends AbstractRemoteAccess {
      * @return
      */
     public SambaConfig getParametersFromURL(String url){
-        SambaConfig sambaBO = new SambaConfig();
+        SambaConfig samba = new SambaConfig();
         String newURL = url.replaceAll("smb://", "");
 
         if(newURL.contains(":")){
-//            String[] salida= newURL.split("[;|:|@|$]");
-            String[] salida= newURL.split("[;|:|@|$]");
-            if(salida.length > 0){
-                for (int i = 0; i < salida.length && salida.length == 5; i++) {
-                    switch (i){
-                        case 0: sambaBO.setDomain( salida[0] ); break;
-                        case 1: sambaBO.setUser( salida[1] ); break;
-                        case 2: sambaBO.setPassword( salida[2] ); break;
-                        case 3: sambaBO.setHost( salida[3] ); break;
-                        case 4: sambaBO.setPath( salida[4] ); break;
-                    }
-                }
+            String[] splitData = newURL.split("[;|:|@|$]");
+            if(splitData.length > 0 && splitData.length == 5){
+                samba.setDomain( splitData[0] );
+                samba.setUser( splitData[1] );
+                samba.setPassword( splitData[2] );
+                samba.setHost( splitData[3] );
+                samba.setPath( splitData[4] );
+            } else {
+                throw new RuntimeException("ERROR: La URL no está bien formada.");
             }
         }
 
-        if(sambaBO.getHost().contains("/")){
-            String[] salidaHost= sambaBO.getHost().split("/");
-            for (int j = 0; j < salidaHost.length; j++) {
-                if(j == 0) sambaBO.setHost(salidaHost[j]);
-                if(j == 1) sambaBO.setShare(salidaHost[j]);
-            }
+        if(samba.getHost().contains("/")){
+            String[] splitHost = samba.getHost().split("/");
+            samba.setHost(splitHost[0]);
+            samba.setShare(splitHost[1]);
         }
 
-        if(sambaBO.getPath().contains(".")){
-            sambaBO.setFilePath( sambaBO.getPath() );
+        if(samba.getPath().contains(".")){
+            samba.setFilePath( samba.getPath() );
 
-            int lastSlashIndex = sambaBO.getPath().lastIndexOf("/");
-            String newPath = sambaBO.getPath().substring(0, lastSlashIndex);
-            sambaBO.setPath( newPath );
+            int lastSlashIndex = samba.getPath().lastIndexOf("/");
+            String newPath = samba.getPath().substring(0, lastSlashIndex);
+            samba.setPath( newPath );
         }
 
         if(url.contains("$")){
-            sambaBO.setShare( sambaBO.getShare() );
+            samba.setShare( samba.getShare() );
 //            sambaBO.setShare( sambaBO.getShare() + "$" );
         }
-        return sambaBO;
+        return samba;
     }
 }

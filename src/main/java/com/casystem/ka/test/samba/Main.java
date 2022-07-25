@@ -7,7 +7,7 @@ public class Main {
     private static final Logger LOG = Logger.getLogger(SmbRemoteAccess.class.getName());
 
     public static void main(String[] args) {
-        String URL = "smb://192.168.163.128;cristian:12345@192.168.163.128/samba-share$/temp/file.txt";
+        String URL = "smb://192.168.163.128;cristian:12345@192.168.163.128/samba-share$/file.txt";
 
         //String text = new SmbRemoteAccess().read(URL); //WORKS
         //System.out.println(text); // WORKS
